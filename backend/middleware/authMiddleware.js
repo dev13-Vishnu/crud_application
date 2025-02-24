@@ -16,4 +16,11 @@ const protect = (req, res, next) => {
     }
 };
 
-export default protect;
+const admin = (req, res, next) => {
+    if(!req.user || !req.user.isAdmin) {
+        return res.status(403).json({message:"Access denied. Admins only!"});
+    }
+    next();
+}
+
+export {admin, protect} ;

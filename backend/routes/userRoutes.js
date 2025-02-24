@@ -4,14 +4,14 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import upload from '../middleware/uploadMiddleware.js';
-import protect from '../middleware/authMiddleware.js';
+import {protect, admin} from '../middleware/authMiddleware.js';
 
 dotenv.config();
 
 const router = express.Router();
 
 //Get all users
-router.get('/',protect, async(req,res) => {
+router.get('/users',protect, async(req,res) => {
     try {
         const users = await User.find();
         res.json(users);
@@ -21,7 +21,7 @@ router.get('/',protect, async(req,res) => {
 })
 //Get a single user by ID
 
-router.get('/user/:id', async(req,res) => {
+router.get('/user/:id', protect, async(req,res) => {
     try {
         const user = await User.findById(req.params.id);
         if(!user) return res.status(404).json({message:'User not found'});
@@ -30,6 +30,8 @@ router.get('/user/:id', async(req,res) => {
         res.status(500).json({error: error.message})
     }
 })
+
+//Register User
 
 router.post('/register', upload.single('profilePic'),async(req, res) => {
     try {
@@ -46,6 +48,7 @@ router.post('/register', upload.single('profilePic'),async(req, res) => {
     }
 })
 
+//Login User
 router.post('/login', async(req,res) => {
     try {
         const {email, password} = req.body;
@@ -56,7 +59,8 @@ router.post('/login', async(req,res) => {
         const isMatch = await bcrypt.compare(password,user.password);
         if(!isMatch) return res.status(400).json({message:'Invalid credentials'});
 
-        const token = jwt.sign({id: user._id}, process.env.JWT_SECRET,{expiresIn:'1h'});
+
+        const token = jwt.sign({id: user._id,isAdmin:user.isAdmin}, process.env.JWT_SECRET,{expiresIn:'1h'});
 
         res.json({token,user});
 
@@ -65,7 +69,7 @@ router.post('/login', async(req,res) => {
     }
 })
 // Update user details
-router.put('/users/:id', async(req,res) => {
+router.put('/users/:id', protect, async(req,res) => {
     try {
         const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {new: true});
         if(!updatedUser) return res.status(404).json({message: 'User not found'});
@@ -78,7 +82,7 @@ router.put('/users/:id', async(req,res) => {
 })
 
 // Delelte a User
-router.delete('/user/:id',protect, async(req,res)=> {
+router.delete('/user/:id', protect, admin, async(req,res)=> {
     try {
         const deletedUser = await User.findByIdAndDelete(req.params.id);
         if(!deletedUser) return res.status(404).json({message: "User not found"});

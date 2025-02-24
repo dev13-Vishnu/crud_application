@@ -27,3 +27,10 @@ dist-ssr
 backend/node_modules/
 backend/.env
 backend/package-lock.json
+backend/uploads
+
+frontend/node_modules
+frontend/dist
+backend/dist
+frontend.env
+frontend/package-lock.json
