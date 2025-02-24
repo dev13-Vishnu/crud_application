@@ -1,16 +1,22 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom';
-import { deleteUser } from './UserReducer';
+import { fetchUsers,deleteUser } from './UserReducer';
 
 
 const Home = () => {
-    const users = useSelector((state) => state.users)
+    const {users, loading, error} = useSelector((state) => state.users)
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(fetchUsers());
+    },[dispatch])
 
     const handleDelete = (id) => {
         dispatch(deleteUser({id:id}))
     }
+    if(loading) return <p>Loading...</p>
+    if(error) return <p>Error: {error}</p>
     
   return (
     <div className="container">
@@ -26,14 +32,14 @@ const Home = () => {
                 </tr>
             </thead>
             <tbody>
-                {users.map((user,index) =>(
-                    <tr key={index}>
+                {users.map((user) =>(
+                    <tr key={user._id}>
                         <td>{user.id}</td>
                         <td>{user.name}</td>
                         <td>{user.email}</td>
                         <td>
                             <Link to={`/edit/${user.id}`} className="btn btn-sm btn-primary">Edit</Link>
-                            <button onClick={() => handleDelete(user.id)} className="btn btn-sm btn-danger ms-2">Delete</button>
+                            <button onClick={() => handleDelete(user._id)} className="btn btn-sm btn-danger ms-2">Delete</button>
                         </td>
                     </tr>
                 ) )}

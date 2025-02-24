@@ -6,13 +6,13 @@ import { useNavigate } from 'react-router-dom';
 const Create = () => {
     const [name,setName] = useState('');
     const [email,setEmai] = useState('');
-    const users = useSelector((state) => state.users);
+    const [password, setPassword] = useState("");
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleSubmit =  (event) => {
         event.preventDefault();
-        dispatch(addUser({id: users[users.length -1].id + 1, name, email})) 
+        dispatch(addUser({ name, email, password})) 
         navigate('/')
     }
   return (
@@ -39,7 +39,18 @@ const Create = () => {
                      placeholder='Enter Email'
                      onChange={(e)=> setEmai(e.target.value)}
                     />
-                </div><br />
+                </div>
+                <div>
+                    <label htmlFor="password">Password:</label>
+                    <input
+                     type="password"
+                     name='password'
+                     className='form-control'
+                     placeholder='Enter Password'
+                     onChange={(e) => setPassword(e.target.value)}
+                    />
+                </div>
+                <br />
                 <button className='btn btn-info'>Submit</button>
             </form>
         </div>

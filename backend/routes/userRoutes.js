@@ -11,7 +11,7 @@ dotenv.config();
 const router = express.Router();
 
 //Get all users
-router.get('/users',protect, async(req,res) => {
+router.get('/', async(req,res) => {
     try {
         const users = await User.find();
         res.json(users);
@@ -69,7 +69,7 @@ router.post('/login', async(req,res) => {
     }
 })
 // Update user details
-router.put('/users/:id', protect, async(req,res) => {
+router.put('/user/:id', protect, async(req,res) => {
     try {
         const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {new: true});
         if(!updatedUser) return res.status(404).json({message: 'User not found'});

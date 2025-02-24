@@ -34,3 +34,4 @@ frontend/dist
 backend/dist
 frontend.env
 frontend/package-lock.json
+package-lock.json
