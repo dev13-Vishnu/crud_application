@@ -11,7 +11,7 @@ dotenv.config();
 const router = express.Router();
 
 //Get all users
-router.get('/', async(req,res) => {
+router.get('/', protect, admin, async(req,res) => {
     try {
         const users = await User.find();
         res.json(users);

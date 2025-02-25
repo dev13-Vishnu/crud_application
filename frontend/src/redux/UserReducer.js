@@ -6,15 +6,17 @@ const API_URL = "http://localhost:5000/api/users";
 //Async actions for all API calls
 
 //Fetch all users
-export const fetchUsers = createAsyncThunk("users/fetchUsers", async(_,{ rejectWithValue}) => {
+export const fetchUsers = createAsyncThunk("users/fetchUsers", async(_,{ rejectWithValue,getState}) => {
     try {
         const token = getState().auth.userToken;
+        // console.log("Token in fetchUsers:", token);
         if(!token) return rejectWithValue("Unauthorized: No token found");
-        const response = await axios.get(API_URL,{
+        const response = await axios.get(`${API_URL}/`,{
             headers: {Authorization:`Bearer ${token}`},
         });
         return response.data;
     } catch (error) {
+        // console.log("Fetch Users Error:",error.response?.data?.message);
         return rejectWithValue(error.response?.data?.message || "Unauthorized")
     }
     
@@ -37,7 +39,7 @@ export const addUser = createAsyncThunk("users/adduUser", async (user, {rejectWi
 //Update user
 export const updateUser = createAsyncThunk("users/updateUser", async(user) => {
     try {
-        const token = locaalStorage.getItem("userToken");
+        const token = localStorage.getItem("userToken");
         if(!token) return rejectWithValue("Unauthorized: No token found");
 
         const response = await axios.put(`${API_URL}/${user.id}`,user,{
@@ -84,7 +86,9 @@ const userSlice = createSlice({
     })
     .addCase(fetchUsers.rejected,(state,action) => {
         state.loading = false;
-        state.error = action.error.message;
+        // state.error = action.error.message;
+        state.error = action.payload;
+        console.error("Fetch Users Error",action.payload)
     })
     
     //Add User

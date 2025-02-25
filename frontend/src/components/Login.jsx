@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../redux/authSlice';
@@ -9,21 +9,23 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const {loading, error} = useSelector((state) => state.auth);
+    const {userToken,loading, error} = useSelector((state) => state.auth);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(loginUser({email, password})).then((result) => {
-            if(result.meta.requestStatus === "fulfilled"){
-                navigate("/");
-            }
-        });
+        dispatch(loginUser({email, password}))
     };
+    useEffect(() => {
+        if(userToken) {
+            navigate("/home");
+        }
+    },[userToken, navigate])
     
   return (
     <div className="d-flex w-100 vh-100 justify-content-center align-items-center">
         <div className="w-50 border bg-secondary text-white p-5">
             <h3>Login</h3>
+            {error && <p style = {{color: "red"}}>{error}</p>}
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="">Email:</label>
