@@ -8,7 +8,7 @@ const API_URL = "http://localhost:5000/api/users";
 //Fetch all users
 export const fetchUsers = createAsyncThunk("users/fetchUsers", async(_,{ rejectWithValue}) => {
     try {
-        const token = localStorage.getItem("userToken");
+        const token = getState().auth.userToken;
         if(!token) return rejectWithValue("Unauthorized: No token found");
         const response = await axios.get(API_URL,{
             headers: {Authorization:`Bearer ${token}`},
