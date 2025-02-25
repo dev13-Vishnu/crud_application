@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { addUser } from './UserReducer';
+import { addUser } from './redux/UserReducer';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 

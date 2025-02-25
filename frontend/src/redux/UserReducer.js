@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { userList } from "./Data";
 import axios from 'axios';
 
 const API_URL = "http://localhost:5000/api/users";
@@ -22,20 +21,47 @@ export const fetchUsers = createAsyncThunk("users/fetchUsers", async(_,{ rejectW
 });
 
 //Add a new User
-export const addUser = createAsyncThunk("users/adduUser", async (user)=> {
-    const response = await axios.get(API_URL);
-    return response.data;
+export const addUser = createAsyncThunk("users/adduUser", async (user, {rejectWithValue})=> {
+    try {
+    const token = localStorage.getItem("userToken");
+    if(!token) return rejectWithValue("Unauthorized: No token found");
+
+    const response = await axios.post(API_URL, user, {
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json"},
+    });
+    return response.data;        
+    } catch (error) {
+        return rejectWithValue(error.response?.data?.message || "Error adding user");
+    }
 })
 //Update user
 export const updateUser = createAsyncThunk("users/updateUser", async(user) => {
-    const response = await axios.put(`${API_URL}/${user.id}`,user);
-    return response.data;
+    try {
+        const token = locaalStorage.getItem("userToken");
+        if(!token) return rejectWithValue("Unauthorized: No token found");
+
+        const response = await axios.put(`${API_URL}/${user.id}`,user,{
+            headers: {Authorization: `Bearer ${token}`, "Content-Type": "application/json"},
+        });
+        return response.data;
+    } catch (error) {
+        return rejectWithValue(error.response?.data?.message || "Error updating user");
+    }
 });
 
 //Delete user
-export const deleteUser = createAsyncThunk("users/deleteUser", async(id) => {
-    await axios.delete(`${API_URL}/${id}`);
-    return id;
+export const deleteUser = createAsyncThunk("users/deleteUser", async(id,{rejectWithValue}) => {
+    try {
+        const token = localStorage.getItem("userToken");
+        if(!token) return rejectWithValue("Unauthorized: No token found");
+
+        await axios.delete(`${API_URL}/${id}`, {
+            headers: {Authorization: `Bearer ${token}`},
+        });
+        return id;
+    } catch (error) {
+        return rejectWithValue(error.response?.data?.message || "Error deleting user");
+    }
 });
 
 const userSlice = createSlice({
