@@ -55,10 +55,8 @@ export const updateUser = createAsyncThunk("users/updateUser", async(user) => {
 export const deleteUser = createAsyncThunk("users/deleteUser", async(id,{rejectWithValue}) => {
     try {
         const token = localStorage.getItem("userToken");
-        if(!token) return rejectWithValue("Unauthorized: No token found");
-
-        await axios.delete(`${API_URL}/${id}`, {
-            headers: {Authorization: `Bearer ${token}`},
+        const response = await  axios.delete(`${API_URL}/${id}`,{
+            headers: {Authorization : `Bearer ${token}`}
         });
         return id;
     } catch (error) {
@@ -98,13 +96,16 @@ const userSlice = createSlice({
 
     //Update user
     .addCase(updateUser.fulfilled,(state,action) => {
-        const index = state.users.findIndex((u) =>u.id === action.payload.id);
+        const index = state.users.findIndex((u) =>u._id === action.payload._id);
         if(index !== -1) {
             state.users[index] = action.payload;
         }
     })
     .addCase(deleteUser.fulfilled, (state, action) => {
-        state.users = state.users.filter((user) => user.id !== action.payload);
+        state.users = state.users.filter((user) => user._id !== action.payload);
+    })
+    .addCase(deleteUser.rejected, (state, action) => {
+        state.error =action.payload;
     });
   },
 });

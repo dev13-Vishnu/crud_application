@@ -9,18 +9,20 @@ const Dashboard = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(fetchUsers());
+        dispatch(fetchUsers()); 
     },[dispatch])
 
     const handleDelete = (id) => {
-        dispatch(deleteUser({id:id}))
-    }
+        if(window.confirm("Are you sure you want to deletee this user?")){
+        dispatch(deleteUser(id))
+        }
+    };
     if(loading) return <p>Loading...</p>
     if(error) return <p>Error: {error}</p>
     
   return (
     <div className="container">
-        <h2>Crud App with JSON Server</h2>
+        <h2>Admin Dashboard</h2>
         <Link to="/create" className="btn btn-success my-3">Create +</Link>
         <table className="table">
             <thead>
@@ -34,11 +36,11 @@ const Dashboard = () => {
             <tbody>
                 {users.map((user) =>(
                     <tr key={user._id}>
-                        <td>{user.id}</td>
+                        <td>{user._id}</td>
                         <td>{user.name}</td>
                         <td>{user.email}</td>
                         <td>
-                            <Link to={`/edit/${user.id}`} className="btn btn-sm btn-primary">Edit</Link>
+                            <Link to={`/edit/${user._id}`} className="btn btn-sm btn-primary">Edit</Link>
                             <button onClick={() => handleDelete(user._id)} className="btn btn-sm btn-danger ms-2">Delete</button>
                         </td>
                     </tr>

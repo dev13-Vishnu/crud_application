@@ -4,14 +4,18 @@ import axios from "axios";
 const API_URL = "http://localhost:5000/api/users";
 
 const token = localStorage.getItem("userToken");
+const userData = JSON.parse(localStorage.getItem("userData")) || null;
 
 //Login Action
 export const loginUser = createAsyncThunk("auth/loginUser", async (credentials, { rejectWithValue } ) => {
     try {
         const response = await axios.post(`${API_URL}/login`, credentials);
-        localStorage.setItem("userToken", response.data.token);
-        localStorage.setItem("userData", JSON.stringify(response.data.user));
-        return response.data;
+        const {token, user} = response.data;
+
+        //store in localStorage
+        localStorage.setItem("userToken", token);
+        localStorage.setItem("userData", JSON.stringify(user));
+        return {token, user}
     } catch (error) {
         return rejectWithValue(error.response?.data?.message || "Login failed");
     }
@@ -28,8 +32,9 @@ export const logoutUser = createAsyncThunk("auth/logoutUser", async() => {
 const authSlice = createSlice({
     name:"auth",
     initialState: {
-        user: JSON.parse(localStorage.getItem("userData")) || null,
+        user: userData,
         userToken: token || null,
+        isAdmin: userData?.isAdmin || false,
         loading: false,
         error: null
     },
@@ -44,6 +49,7 @@ const authSlice = createSlice({
             state.loading = false;
             state.user = action.payload.user;
             state.userToken = action.payload.token;
+            state.isAdmin = action.payload.user.isAdmin;
             state.error = null;
         })
         .addCase(loginUser.rejected, (state,action) => {
@@ -53,6 +59,7 @@ const authSlice = createSlice({
         .addCase(logoutUser.fulfilled, (state) => {
             state.user = null;
             state.userToken = null;
+            state.isAdmin = false;
         });
     }
 });
