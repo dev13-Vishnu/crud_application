@@ -69,7 +69,7 @@ router.post('/login', async(req,res) => {
     }
 })
 // Update user details
-router.put('/user/:id', protect, async(req,res) => {
+router.put('/:id', protect, async(req,res) => {
     try {
         const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {new: true});
         if(!updatedUser) return res.status(404).json({message: 'User not found'});
@@ -82,7 +82,7 @@ router.put('/user/:id', protect, async(req,res) => {
 })
 
 // Delelte a User
-router.delete('/user/:id', protect, admin, async(req,res)=> {
+router.delete('/:id', protect, admin, async(req,res)=> {
     try {
         const deletedUser = await User.findByIdAndDelete(req.params.id);
         if(!deletedUser) return res.status(404).json({message: "User not found"});

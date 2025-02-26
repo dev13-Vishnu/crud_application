@@ -1,17 +1,24 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom'
 import { updateUser } from './redux/UserReducer';
 
 function Update() {
     const {id} = useParams();
-    const users = useSelector((state) => state.users);
-    const existingUser = users.filter(f=> f.id == id);
+    const users = useSelector((state) => state.users.users);
+    const existingUser = users.find(f=> f._id === id);
 
-    const {name, email} = existingUser[0];
+    const {name ='', email =''} = existingUser || {};
 
-    const [uname, setUname] = useState(name);
-    const [uemail, setUemail] = useState(email);
+    const [uname, setUname] = useState( existingUser?.name || "");
+    const [uemail, setUemail] = useState(existingUser?.email || "");
+
+    useEffect(() => {
+        if(existingUser) {
+            setUname(existingUser.name);
+            setUemail(existingUser.email);
+        }
+    },[existingUser])
 
     const dispatch  = useDispatch();
     
@@ -19,13 +26,18 @@ function Update() {
 
     const handleUpdate = (event) => {
         event.preventDefault();
+
+        if(!uname || !uemail) {
+            alert("Please fill in all fields.");
+            return;
+        }
         dispatch(updateUser({
              id,
              name: uname,
              email: uemail
             })
         )
-        navigate('/')
+        navigate('/dashboard')
     }
 
   return (

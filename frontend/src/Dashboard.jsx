@@ -14,6 +14,7 @@ const Dashboard = () => {
 
     const handleDelete = (id) => {
         if(window.confirm("Are you sure you want to deletee this user?")){
+            console.log("Deleting User ID:", id);
         dispatch(deleteUser(id))
         }
     };

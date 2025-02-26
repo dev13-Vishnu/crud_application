@@ -55,11 +55,13 @@ export const updateUser = createAsyncThunk("users/updateUser", async(user) => {
 export const deleteUser = createAsyncThunk("users/deleteUser", async(id,{rejectWithValue}) => {
     try {
         const token = localStorage.getItem("userToken");
+        console.log(`Sending DELETE request to : ${API_URL} /${id}`);
         const response = await  axios.delete(`${API_URL}/${id}`,{
             headers: {Authorization : `Bearer ${token}`}
         });
         return id;
     } catch (error) {
+        console.error("Delete User Error:", error.response?.data?.message || "Error deleting user");
         return rejectWithValue(error.response?.data?.message || "Error deleting user");
     }
 });
@@ -101,6 +103,7 @@ const userSlice = createSlice({
             state.users[index] = action.payload;
         }
     })
+    //delete user
     .addCase(deleteUser.fulfilled, (state, action) => {
         state.users = state.users.filter((user) => user._id !== action.payload);
     })
