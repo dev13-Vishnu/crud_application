@@ -17,7 +17,7 @@ app.use(cors({
     credentials: true
 }));
 
-app.use('/uploads', express.static(path.join('uploads')));
+app.use('/uploads', express.static(path.join(path.resolve(),'uploads')));
 
 app.use('/api/users', userRoutes)
 app.get('/', (req, res) => res.send('API is running...'));

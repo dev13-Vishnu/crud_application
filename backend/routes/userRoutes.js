@@ -37,7 +37,7 @@ router.post('/register', upload.single('profilePic'),async(req, res) => {
     try {
         const {name, email, password} = req.body;
         const hashedPassword = await bcrypt.hash(password,10);
-        const profilePic = req.file? req.file.path: '';
+        const profilePic = req.file? req.file.path.replace(/\\/g, "/"): '';
 
         const user = new User({name,email, password: hashedPassword, profilePic});
         await user.save();
@@ -45,7 +45,7 @@ router.post('/register', upload.single('profilePic'),async(req, res) => {
 
     } catch (error) {
         res.status(500).json({error: error.message});
-    }
+    } 
 })
 
 //Login User
