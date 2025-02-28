@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 const Home = () => {
     const {user} = useSelector((state) => state.auth)
-    console.log("User Data:",user);
+    // console.log("User Data:",user);
     const profilePicUrl = user?.profilePic ?`http://localhost:5000/${user.profilePic}` : "http://via.placeholder.com/150"
   return (
     <div className="container mt-5 text-center">

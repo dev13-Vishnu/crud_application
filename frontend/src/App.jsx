@@ -8,6 +8,7 @@ import Update from './Update';
 import Login from './components/Login';
 import PrivateRoute from './PrivateRoute';
 import Home from './Home';
+import EditProfile from './EditProfile';
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
       <Route path = "/home" element = {<PrivateRoute><Home/></PrivateRoute>} />
       <Route path='/dashboard' element =  {<PrivateRoute adminOnly ={true}><Dashboard/></PrivateRoute>}/>
       <Route path='/edit/:id' element = {<PrivateRoute adminOnly = {true}><Update/></PrivateRoute>}/>
+      <Route path= "/edit-profile/:id" element ={<PrivateRoute><EditProfile/></PrivateRoute>}/>
     </Routes>
   </BrowserRouter>
   )

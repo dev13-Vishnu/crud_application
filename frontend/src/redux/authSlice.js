@@ -28,6 +28,23 @@ export const logoutUser = createAsyncThunk("auth/logoutUser", async() => {
     return null;
 });
 
+//Update Logged in User Action
+export const updateLoggedInUser = createAsyncThunk("auth/updateUser", async(userDAta, {rejectWithValue}) => {
+    try {
+        const response = await axios.put(`${API_URL}/${userData.id}`, userData, {
+            headers: {
+                Authorization: `Bearer ${ocalStorage.getItem("userToken")}`,
+            },
+        });
+        localStorage.setItem("userData", JSON.stringify(response.data));
+        return response.data;
+    } catch (error) {
+        return rejectWithValue(error.response?.data?.message || "Update failed");
+    }
+})
+
+
+
 //Auth Slice
 const authSlice = createSlice({
     name:"auth",
@@ -60,6 +77,13 @@ const authSlice = createSlice({
             state.user = null;
             state.userToken = null;
             state.isAdmin = false;
+        })
+        .addCase(updateLoggedInUser.fulfilled,(state, action) => {
+            state.user= {...state.user, ...action.payload};
+            state.error = null;
+        })
+        .addCase(updateLoggedInUser.rejected, (state, action) => {
+            state.error = action.payload || "update failed";
         });
     }
 });

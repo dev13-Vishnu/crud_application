@@ -69,15 +69,32 @@ router.post('/login', async(req,res) => {
     }
 })
 // Update user details
-router.put('/:id', protect, async(req,res) => {
+// router.put('/:id', protect, async(req,res) => {
+//     try {
+//         const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {new: true});
+//         if(!updatedUser) return res.status(404).json({message: 'User not found'});
+
+//         res.json(updatedUser);
+
+//     } catch (error) {
+//         res.status(500).json({error: error.message})
+//     }
+// })
+router.put('/:id', protect, upload.single('profilePic'), async (req,res) => {
     try {
-        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {new: true});
-        if(!updatedUser) return res.status(404).json({message: 'User not found'});
+        const user = await User.findById(req.user.id);
+        if(!user) return res.status(404).json({message: "User not found"});
 
+        user.name = req.body.name || user.name;
+        user.email = req.body.email || user.email;
+        if(req.file) {
+            // console.log("Uploaded file Path:", req.file.path);
+            user.profilePic = req.file.path.replace(/\\/g,"/");
+        }
+        const updatedUser = await user.save();
         res.json(updatedUser);
-
     } catch (error) {
-        res.status(500).json({error: error.message})
+        res.status(500).json({error:message});        
     }
 })
 
