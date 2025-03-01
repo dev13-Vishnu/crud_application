@@ -2,9 +2,8 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
-import { updateUser } from './redux/UserReducer';
-import { updateLoggedInUser } from './redux/authSlice';
-
+// import { updateUser } from './redux/UserReducer';
+import { updateLoggedInUser } from './redux/UserReducer';
 const EditProfile = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -27,7 +26,7 @@ const EditProfile = () => {
             formData.append('profilePic', profilePic);
         }
         try {
-            const response = await axios.put(`http://localhost:5000/api/users/${user._id}`,formData, {
+            const response = await axios.put(`http://localhost:5000/api/users/profile`,formData, {
                 headers:{
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${localStorage.getItem("userToken")}`,
@@ -38,11 +37,7 @@ const EditProfile = () => {
             updatedUser.profilePic += `?t= ${new Date().getTime()}`;
             dispatch(updateLoggedInUser(updatedUser));
 
-            //Update user  info in Redux store
-            dispatch(updateUser({...response.data, id: user._id}))
-            setName(response.data.name);
-            setEmail(response.data.email)
-
+            
             localStorage.setItem("userData", JSON.stringify(response.data));
             
             navigate('/home');

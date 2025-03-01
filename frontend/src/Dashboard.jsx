@@ -41,7 +41,7 @@ const Dashboard = () => {
                         <td>{user.name}</td>
                         <td>{user.email}</td>
                         <td>
-                            <Link to={`/edit/${user._id}`} className="btn btn-sm btn-primary">Edit</Link>
+                            
                             <button onClick={() => handleDelete(user._id)} className="btn btn-sm btn-danger ms-2">Delete</button>
                         </td>
                     </tr>

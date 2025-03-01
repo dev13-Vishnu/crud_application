@@ -37,6 +37,7 @@ function Update() {
              email: uemail
             })
         )
+        
         navigate('/dashboard')
     }
 

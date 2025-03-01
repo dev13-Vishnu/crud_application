@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 const Home = () => {
     const {user} = useSelector((state) => state.auth)
     // console.log("User Data:",user);
-    const profilePicUrl = user?.profilePic ?`http://localhost:5000/${user.profilePic}` : "http://via.placeholder.com/150"
+    const profilePicUrl = user?.profilePic ?`http://localhost:5000/${user.profilePic}` : "avatar-1577909_1280.png"
   return (
     <div className="container mt-5 text-center">
         <div className="card p-4 shadow-sm w-50 mx-auto">
@@ -17,10 +17,10 @@ const Home = () => {
                 />
             </div>
             <h2>Welcome, {user?.name}</h2>
-            <p>Email: {user?.name}</p>
+            <p>Email: {user?.email}</p>
 
             <div className="mt-3">
-                <Link to={`/edit-profile/${user?._id}`} className='btn btn-primary me-2'>
+                <Link to={`/edit-profile/`} className='btn btn-primary me-2'>
                     Edit Profile
                 </Link>
             </div>

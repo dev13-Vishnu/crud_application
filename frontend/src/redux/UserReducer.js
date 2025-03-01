@@ -36,20 +36,20 @@ export const addUser = createAsyncThunk("users/adduUser", async (user, {rejectWi
         return rejectWithValue(error.response?.data?.message || "Error adding user");
     }
 })
-//Update user
-export const updateUser = createAsyncThunk("users/updateUser", async(user) => {
-    try {
-        const token = localStorage.getItem("userToken");
-        if(!token) return rejectWithValue("Unauthorized: No token found");
 
-        const response = await axios.put(`${API_URL}/${user.id}`,user,{
-            headers: {Authorization: `Bearer ${token}`, "Content-Type": "application/json"},
+export const updateLoggedInUser = createAsyncThunk("auth/updateUser", async(userData, {rejectWithValue}) => {
+    try {
+        const response = await axios.put(`${API_URL}/${userData.id}`, userData, {
+            headers: {
+                Authorization: `Bearer ${ocalStorage.getItem("userToken")}`,
+            },
         });
+        localStorage.setItem("userData", JSON.stringify(response.data));
         return response.data;
     } catch (error) {
-        return rejectWithValue(error.response?.data?.message || "Error updating user");
+        return rejectWithValue(error.response?.data?.message || "Update failed");
     }
-});
+})
 
 //Delete user
 export const deleteUser = createAsyncThunk("users/deleteUser", async(id,{rejectWithValue}) => {
@@ -95,13 +95,12 @@ const userSlice = createSlice({
     .addCase(addUser.fulfilled, (state, action) => {
         state.users.push(action.payload);
     })
-
-    //Update user
-    .addCase(updateUser.fulfilled,(state,action) => {
-        const index = state.users.findIndex((u) =>u._id === action.payload._id);
-        if(index !== -1) {
-            state.users[index] = action.payload;
-        }
+    .addCase(updateLoggedInUser.fulfilled,(state, action) => {
+        state.user= {...state.user, ...action.payload};
+        state.error = null;
+    })
+    .addCase(updateLoggedInUser.rejected, (state, action) => {
+        state.error = action.payload || "update failed";
     })
     //delete user
     .addCase(deleteUser.fulfilled, (state, action) => {

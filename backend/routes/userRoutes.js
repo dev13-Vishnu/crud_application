@@ -5,10 +5,13 @@ import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import upload from '../middleware/uploadMiddleware.js';
 import {protect, admin} from '../middleware/authMiddleware.js';
+import { registerUser } from '../controllers/userController.js';
 
 dotenv.config();
 
 const router = express.Router();
+
+router.post("/register", registerUser);
 
 //Get all users
 router.get('/', protect, admin, async(req,res) => {
@@ -33,20 +36,20 @@ router.get('/user/:id', protect, async(req,res) => {
 
 //Register User
 
-router.post('/register', upload.single('profilePic'),async(req, res) => {
-    try {
-        const {name, email, password} = req.body;
-        const hashedPassword = await bcrypt.hash(password,10);
-        const profilePic = req.file? req.file.path.replace(/\\/g, "/"): '';
+// router.post('/register', upload.single('profilePic'),async(req, res) => {
+//     try {
+//         const {name, email, password} = req.body;
+//         const hashedPassword = await bcrypt.hash(password,10);
+//         const profilePic = req.file? req.file.path.replace(/\\/g, "/"): '';
 
-        const user = new User({name,email, password: hashedPassword, profilePic});
-        await user.save();
-        res.status(201).json({message:'User Registered',user});
+//         const user = new User({name,email, password: hashedPassword, profilePic});
+//         await user.save();
+//         res.status(201).json({message:'User Registered',user});
 
-    } catch (error) {
-        res.status(500).json({error: error.message});
-    } 
-})
+//     } catch (error) {
+//         res.status(500).json({error: error.message});
+//     } 
+// })
 
 //Login User
 router.post('/login', async(req,res) => {
@@ -80,7 +83,7 @@ router.post('/login', async(req,res) => {
 //         res.status(500).json({error: error.message})
 //     }
 // })
-router.put('/:id', protect, upload.single('profilePic'), async (req,res) => {
+router.put('/profile', protect, upload.single('profilePic'), async (req,res) => {
     try {
         const user = await User.findById(req.user.id);
         if(!user) return res.status(404).json({message: "User not found"});
@@ -92,9 +95,15 @@ router.put('/:id', protect, upload.single('profilePic'), async (req,res) => {
             user.profilePic = req.file.path.replace(/\\/g,"/");
         }
         const updatedUser = await user.save();
-        res.json(updatedUser);
+        res.json({
+            _id: updatedUser._id,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            profilePic: updatedUser.profilePic,
+            token: req.headers.authorization.split(" ")[1]
+        });
     } catch (error) {
-        res.status(500).json({error:message});        
+        res.status(500).json({error:error.message});        
     }
 })
 
