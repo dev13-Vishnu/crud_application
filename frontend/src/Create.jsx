@@ -16,12 +16,12 @@ const Create = () => {
         navigate('/')
     }
   return (
-    <div className="d-flex w-100 vh-100 justify-content-center align-items-center">
-        <div className="w-50 border bg-secondary text-white p-5">
-            <h3>Add New User</h3>
+    <div className="d-flex w-100 vh-100 justify-content-center align-items-center bg-dark text-light">
+        <div className="w-50  rounded shadow bg-secondary  p-5">
+            <h3 className='text-center text-info'>Add New User</h3>
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="name">Name:</label>
+                <div className='mb-3'>
+                    <label htmlFor="name" className='form-label'>Name:</label>
                     <input
                      type="text" 
                      name='name'
@@ -30,8 +30,8 @@ const Create = () => {
                      onChange={(e) => setName(e.target.value)}
                     />
                 </div>
-                <div>
-                    <label htmlFor="email">Email:</label>
+                <div className='mb-3'>
+                    <label htmlFor="email" className='form-label'>Email:</label>
                     <input
                      type="email"
                      name='email'
@@ -40,8 +40,8 @@ const Create = () => {
                      onChange={(e)=> setEmai(e.target.value)}
                     />
                 </div>
-                <div>
-                    <label htmlFor="password">Password:</label>
+                <div className='mb-3'>
+                    <label htmlFor="password" className='form-label'>Password:</label>
                     <input
                      type="password"
                      name='password'
@@ -51,7 +51,7 @@ const Create = () => {
                     />
                 </div>
                 <br />
-                <button className='btn btn-info'>Submit</button>
+                <button className='btn btn-primary w-100'>Submit</button>
             </form>
         </div>
     </div>
