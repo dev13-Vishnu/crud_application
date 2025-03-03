@@ -7,6 +7,7 @@ import { loginUser } from '../redux/authSlice';
 const Login = () => {
     const [email, setEmail] =useState("");
     const [password, setPassword] = useState("");
+    
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const {userToken,loading, error} = useSelector((state) => state.auth);
@@ -74,8 +75,8 @@ const Login = () => {
                     {loading? "Logging in...":"Login"}
                 </button>
             </form>
-            <br/>
-            <p className='text-center'>Don't have an Account?<Link to='/signup' style={{ color: "#00BFFF"}}>Sign Up</Link> </p>
+            <br/>''
+            <p className='text-center'>Don't have an Account?<Link to='/register' style={{ color: "#00BFFF"}}>Sign Up</Link> </p>
         </div>
     </div>
   )

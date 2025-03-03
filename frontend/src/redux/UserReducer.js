@@ -23,19 +23,7 @@ export const fetchUsers = createAsyncThunk("users/fetchUsers", async(_,{ rejectW
 });
 
 //Add a new User
-export const addUser = createAsyncThunk("users/adduUser", async (user, {rejectWithValue})=> {
-    try {
-    const token = localStorage.getItem("userToken");
-    if(!token) return rejectWithValue("Unauthorized: No token found");
 
-    const response = await axios.post(API_URL, user, {
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json"},
-    });
-    return response.data;        
-    } catch (error) {
-        return rejectWithValue(error.response?.data?.message || "Error adding user");
-    }
-})
 
 export const updateLoggedInUser = createAsyncThunk("auth/updateUser", async(userData, {rejectWithValue}) => {
     try {
@@ -91,10 +79,7 @@ const userSlice = createSlice({
         console.error("Fetch Users Error",action.payload)
     })
     
-    //Add User
-    .addCase(addUser.fulfilled, (state, action) => {
-        state.users.push(action.payload);
-    })
+    
     .addCase(updateLoggedInUser.fulfilled,(state, action) => {
         state.user= {...state.user, ...action.payload};
         state.error = null;

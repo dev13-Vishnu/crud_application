@@ -10,15 +10,36 @@ const Signup = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [errors, setErrors] = useState('');
 
-    const handleSubmit = async (e) => {
+    const validate = () => {
+        let errors = {};
+        if(!name.trim()) {
+            errors.name = "Name is reqruired";
+        }
+        if(!email.trim()) {
+            errors.email = "Email is required";
+        } else if(!/\S+@\S+\.\S+/.test(email)) {
+            errors.email = "Invalid email format";
+        }
+        if (!password) {
+            errors.password =  "Password is required";
+        } else if(password.length< 6){
+            errors.password = "Password must be at least 6 charecters";
+        }
+        if(password !== confirmPassword) {
+            errors.confirmPassword = "Passwords do not match";
+        }
+        setErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
+    const handleSubmit =  (e) => {
         e.preventDefault();
-        const userData = { name, email, password };
-
-        const result = await dispatch(registerUser(userData));
-
-        if (!result.error) {
-            navigate("/home"); // Redirect to Dashboard
+        if(validate()) {
+            dispatch(registerUser({name, email, password}));
+            navigate('/home')
         }
     };
   return (
@@ -37,8 +58,9 @@ const Signup = () => {
                      style={{borderBottom : "2px solid #00BFFF"}}
                      value={name}
                      onChange={(e) => setName(e.target.value)}
-                     required
+                     
                     />
+                    {errors.name && <p className='text-danger'>{errors.name}</p>}
                 </div>
                 <div className="mb-3">
                     <label htmlFor="" className="form-label">
@@ -50,6 +72,7 @@ const Signup = () => {
                      value={email}
                      onChange={(e) => setEmail(e.target.value)}
                      />
+                     {errors.email && <p className='text-danger'>{errors.email}</p>}
                 </div>
                 <div className="mb-3">
                     <label htmlFor="" className="form-label">
@@ -59,10 +82,27 @@ const Signup = () => {
                      type="password"
                      className="form-control bg-dark text-light border-0" 
                      style={{borderBottom : "2px solid #00BFFF"}}
+                     placeholder='Enter password...'
                      value={password}
                      onChange={(e)  => setPassword(e.target.value)}
-                    required
+                    
                     />
+                    {errors.password && <p className='text-danger'>{errors.password}</p>}
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="" className="form-label">
+                        Confirm Password:
+                    </label>
+                    <input
+                     type="password"
+                     className="form-control bg-dark text-light border-0" 
+                     style={{borderBottom : "2px solid #00BFFF"}}
+                     placeholder='Confim password...'
+                     value={confirmPassword}
+                     onChange={(e)  => setConfirmPassword(e.target.value)}
+                    
+                    />
+                    {errors.confirmPassword && <p className='text-danger'>{errors.confirmPassword}</p>}
                 </div>
                 <button
                  className="btn w-100"

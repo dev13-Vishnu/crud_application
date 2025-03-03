@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './config/db.js';
 import userRoutes from './routes/userRoutes.js'
+import adminRoutes from './routes/adminRoutes.js'
 import path from 'path'
 
 dotenv.config();
@@ -20,6 +21,7 @@ app.use(cors({
 app.use('/uploads', express.static(path.join(path.resolve(),'uploads')));
 
 app.use('/api/users', userRoutes)
+app.use('/api/admin',adminRoutes)
 app.get('/', (req, res) => res.send('API is running...'));
 
 const PORT = process.env.PORT || 5000;

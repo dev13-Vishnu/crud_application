@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { addUser } from './redux/UserReducer';
+import { addUser } from './redux/AdminReducer';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,9 +11,14 @@ const Create = () => {
     const navigate = useNavigate();
 
     const handleSubmit =  (event) => {
-        event.preventDefault();
-        dispatch(addUser({ name, email, password})) 
-        navigate('/')
+        try {
+            event.preventDefault();
+        dispatch(addUser({ name, email, password})) .unwrap();
+        navigate('/dashboard')
+        } catch (error) {
+            console.error("Error:",error);
+            alert(error);
+        }
     }
   return (
     <div className="d-flex w-100 vh-100 justify-content-center align-items-center bg-dark text-light">
@@ -51,7 +56,8 @@ const Create = () => {
                     />
                 </div>
                 <br />
-                <button className='btn btn-primary w-100'>Submit</button>
+                <button className='btn btn-primary w-100'
+                >Submit</button>
             </form>
         </div>
     </div>
